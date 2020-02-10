@@ -1,0 +1,200 @@
+﻿<Window x:Class="JellySimulation.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"        
+        xmlns:hx="http://helix-toolkit.org/wpf/SharpDX"
+        xmlns:h="http://helix-toolkit.org/wpf"
+        xmlns:local="clr-namespace:JellySimulation"
+        mc:Ignorable="d"
+        Title="Jelly" Height="800" Width="1200">
+    <Window.DataContext>
+        <local:Manager/>
+    </Window.DataContext>
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="4*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Border Grid.Column="0" Margin="5" DataContext="{Binding GraphicsContainer}" MouseDown="Border_MouseDown" MouseMove="Border_MouseMove">
+            <hx:Viewport3DX 
+            Name="Viewport3DX"
+            Grid.Row="0"
+            Grid.Column="0"
+            BackgroundColor="AliceBlue"
+            Camera="{Binding Camera}"
+            EffectsManager="{Binding EffectsManager}"
+            ModelUpDirection="{Binding UpDirection}"
+            EnableDesignModeRendering="True"
+            FXAALevel="High"
+            ShowCoordinateSystem="True">
+                <hx:Viewport3DX.InputBindings>
+                    <KeyBinding Key="B" Command="hx:ViewportCommands.BackView" />
+                    <KeyBinding Key="F" Command="hx:ViewportCommands.FrontView" />
+                    <KeyBinding Key="U" Command="hx:ViewportCommands.TopView" />
+                    <KeyBinding Key="D" Command="hx:ViewportCommands.BottomView" />
+                    <KeyBinding Key="L" Command="hx:ViewportCommands.LeftView" />
+                    <KeyBinding Key="R" Command="hx:ViewportCommands.RightView" />
+                    <KeyBinding Command="hx:ViewportCommands.ZoomExtents" Gesture="Control+E" />
+                    <MouseBinding Command="hx:ViewportCommands.Rotate" Gesture="RightClick" />
+                    <MouseBinding Command="hx:ViewportCommands.Pan" Gesture="MiddleClick" />
+                    <!--<MouseBinding Command="hx:ViewportCommands.Pan" Gesture="LeftClick" />-->
+                </hx:Viewport3DX.InputBindings>
+                <hx:AmbientLight3D Color="{Binding AmbientLightColor}" />
+                <hx:DirectionalLight3D Direction="{Binding Camera.LookDirection}" Color="{Binding DirectionalLightColor}"/>
+
+                <hx:LineGeometryModel3D 
+                Name="Grid"
+                Geometry="{Binding Grid}"
+                Transform="{Binding GridTransform}"
+                Color="Black" />
+
+                <hx:LineGeometryModel3D
+                    Name="BoundingBox"
+                    Geometry="{Binding BoundingBox}"
+                    Transform="{Binding BoundingBoxTransform}"
+                    Color="Black" 
+                    Visibility="{Binding IsChecked, ElementName=Checkbox_BoundingBox, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+            
+                <hx:LineGeometryModel3D
+                    Name="Frame"
+                    Geometry="{Binding FrameBox}"
+                    Transform="{Binding FrameBoxTransform}"
+                    Color="Black" 
+                    Visibility="{Binding IsChecked, ElementName=Checkbox_Frame, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+                <hx:LineGeometryModel3D
+                    Name="SpringsModel"
+                    Thickness="1"
+                    Geometry="{Binding Springs}"
+                    Transform="{Binding SpringsTransform}"
+                    Color="#FFDA5757" 
+                    Visibility="{Binding IsChecked, ElementName=Checkbox_ControlSprings, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+                <hx:PointGeometryModel3D 
+                Name="bezierPoints"
+                Size="10 10"
+                Figure="Ellipse"
+                Geometry="{Binding BezierPoints}"
+                Color="#FF00A2FF" 
+                Visibility="{Binding IsChecked, ElementName=Checkbox_ControlPoints, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+                <hx:GroupModel3D
+                Name="customModel"
+                ItemsSource="{Binding CustomModel3DCollection}"
+                Transform="{Binding BoundingBoxTransform}"
+                Visibility="{Binding IsChecked, ElementName=Checkbox_DeformedSolid, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+                <hx:MeshGeometryModel3D
+                Visibility="{Binding IsChecked, ElementName=Checkbox_BezierCube, Converter={StaticResource BooleanToVisibilityConverter}}"
+                x:Name="f1"
+                Geometry="{Binding BezierCubeFace1}"
+                Material="{Binding GoldMaterial}"
+                Transform="{Binding BezierCubeTransform}" />
+                <hx:MeshGeometryModel3D 
+                Visibility="{Binding IsChecked, ElementName=Checkbox_BezierCube, Converter={StaticResource BooleanToVisibilityConverter}}"
+                x:Name="f2"
+                Geometry="{Binding BezierCubeFace2}"
+                Material="{Binding GoldMaterial}"
+                Transform="{Binding BezierCubeTransform}" />
+                <hx:MeshGeometryModel3D
+                Visibility="{Binding IsChecked, ElementName=Checkbox_BezierCube, Converter={StaticResource BooleanToVisibilityConverter}}"
+                x:Name="f3"
+                Geometry="{Binding BezierCubeFace3}"
+                Material="{Binding GoldMaterial}"
+                Transform="{Binding BezierCubeTransform}" />
+                <hx:MeshGeometryModel3D
+                Visibility="{Binding IsChecked, ElementName=Checkbox_BezierCube, Converter={StaticResource BooleanToVisibilityConverter}}"
+                x:Name="f4"
+                Geometry="{Binding BezierCubeFace4}"
+                Material="{Binding GoldMaterial}"
+                Transform="{Binding BezierCubeTransform}" />
+                <hx:MeshGeometryModel3D
+                Visibility="{Binding IsChecked, ElementName=Checkbox_BezierCube, Converter={StaticResource BooleanToVisibilityConverter}}"
+                x:Name="f5"
+                Geometry="{Binding BezierCubeFace5}"
+                Material="{Binding GoldMaterial}"
+                Transform="{Binding BezierCubeTransform}" />
+                <hx:MeshGeometryModel3D
+                Visibility="{Binding IsChecked, ElementName=Checkbox_BezierCube, Converter={StaticResource BooleanToVisibilityConverter}}"
+                x:Name="f6"
+                Geometry="{Binding BezierCubeFace6}"
+                Material="{Binding GoldMaterial}"
+                Transform="{Binding BezierCubeTransform}" />
+            </hx:Viewport3DX>
+        </Border>
+        <StackPanel Grid.Column="1" Orientation="Vertical">
+            <GroupBox Header="Simulation Objects Visibility" Margin="5" Padding="5">
+                <StackPanel Margin="0 0 0 5">
+                    <StackPanel.Resources>
+                        <Style TargetType="{x:Type CheckBox}">
+                            <Setter Property="Margin" Value="0 10 0 0"/>
+                        </Style>
+                    </StackPanel.Resources>
+                    <CheckBox Name="Checkbox_ControlPoints" Content="Control Points and Springs" IsChecked="True"/>
+                    <CheckBox Name="Checkbox_ControlSprings" Content="Control Springs" IsChecked="True"/>
+                    <CheckBox Name="Checkbox_Frame" Content="Control Frame" IsChecked="True"/>
+                    <CheckBox Name="Checkbox_BoundingBox" Content="Bounding Box" IsChecked="True"/>
+                    <CheckBox Name="Checkbox_BezierCube" Content="Bezier Cube"/>
+                    <CheckBox Name="Checkbox_DeformedSolid" Content="Deformed Solid"/>
+                    <DockPanel LastChildFill="True" Margin="0 10 0 0">
+                        <Button DockPanel.Dock="Right" Content="Load .obj" Margin="5 0" Click="LoadButton_Click"/>
+                        <TextBox Name="TextBox_CustomMeshPath" Text="" Margin="5 0" HorizontalAlignment="Stretch" VerticalAlignment="Center" />
+                    </DockPanel>
+                    <!--<CheckBox Name="Checkbox_CoordinateSystem" Content="Coordinate System" IsChecked="True"/>-->
+                </StackPanel>
+            </GroupBox>
+            <!--<GroupBox Header="Enable Gravity" Margin="5" Padding="5">
+                <Grid Margin="0 0 0 5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="2*"/>
+                    </Grid.ColumnDefinitions>
+                    <RadioButton GroupName="ToggleGravity" Content="On" IsChecked="{Binding IsGravityOn, Mode=TwoWay}"/>
+                    <RadioButton Grid.Column="1" GroupName="ToggleGravity" Content="Off"/>
+                </Grid>
+            </GroupBox>
+            <GroupBox Header="Gravity Direction" Margin="5" Padding="5">
+                <Grid Margin="0 0 0 5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="2*"/>
+                    </Grid.ColumnDefinitions>
+                    <RadioButton GroupName="GravityDirection" Content="Down" IsChecked="{Binding IsGravityDown, Mode=TwoWay}"/>
+                    <RadioButton Grid.Column="1" GroupName="GravityDirection" Content="Up"/>
+                </Grid>
+            </GroupBox>-->
+            <GroupBox Header="Simulation Parameters" Margin="5" Padding="5" DataContext="{Binding SimulationConfig}">
+                <Grid Margin="0 0 0 5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2.5*"/>
+                        <ColumnDefinition Width="2*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="25"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="Control Points mass:" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Row="1" Text="Elasticity (small):" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Row="2" Text="Damping:" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Row="3" Text="Elasticity (big):" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Row="4" Text="Disorder (max):" VerticalAlignment="Center"/>
+
+                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding PointsMass, Mode=TwoWay}" VerticalAlignment="Center"/>
+                    <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Elasticity1, Mode=TwoWay}" VerticalAlignment="Center"/>
+                    <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Damping, Mode=TwoWay}" VerticalAlignment="Center"/>
+                    <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Elasticity2, Mode=TwoWay}" VerticalAlignment="Center"/>
+                    <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding Disorder, Mode=TwoWay}" VerticalAlignment="Center"/>
+                </Grid>
+            </GroupBox>
+            <Button Content="Reset" Width="80" Height="30" Click="ResetButton_Click"/>
+            <!--<Button Content="Load OBJ" Width="80" Height="30" Click="LoadButton_Click"/>-->
+        </StackPanel>
+    </Grid>
+</Window>
