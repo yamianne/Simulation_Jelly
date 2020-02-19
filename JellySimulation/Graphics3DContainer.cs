@@ -48,28 +48,32 @@ namespace JellySimulation
         public Transform3D SpringsTransform { get; private set; }
         public Transform3D BezierCubeTransform { get; private set; }
 
-        public MeshGeometry3D BezierCubeFace1 { get => bezierCubeFace1; private set => SetValue(ref bezierCubeFace1, value); }
-        public MeshGeometry3D BezierCubeFace2 { get => bezierCubeFace2; private set => SetValue(ref bezierCubeFace2, value); }
-        public MeshGeometry3D BezierCubeFace3 { get => bezierCubeFace3; private set => SetValue(ref bezierCubeFace3, value); }
-        public MeshGeometry3D BezierCubeFace4 { get => bezierCubeFace4; private set => SetValue(ref bezierCubeFace4, value); }
-        public MeshGeometry3D BezierCubeFace5 { get => bezierCubeFace5; private set => SetValue(ref bezierCubeFace5, value); }
-        public MeshGeometry3D BezierCubeFace6 { get => bezierCubeFace6; private set => SetValue(ref bezierCubeFace6, value); }
+        //public MeshGeometry3D BezierCubeFace1 { get => bezierCubeFace1; private set => SetValue(ref bezierCubeFace1, value); }
+        //public MeshGeometry3D BezierCubeFace2 { get => bezierCubeFace2; private set => SetValue(ref bezierCubeFace2, value); }
+        //public MeshGeometry3D BezierCubeFace3 { get => bezierCubeFace3; private set => SetValue(ref bezierCubeFace3, value); }
+        //public MeshGeometry3D BezierCubeFace4 { get => bezierCubeFace4; private set => SetValue(ref bezierCubeFace4, value); }
+        //public MeshGeometry3D BezierCubeFace5 { get => bezierCubeFace5; private set => SetValue(ref bezierCubeFace5, value); }
+        //public MeshGeometry3D BezierCubeFace6 { get => bezierCubeFace6; private set => SetValue(ref bezierCubeFace6, value); }
+        public MeshGeometry3D BezierCubeFace1 { get => bezierCubeFaces[0]; private set => SetValue(ref bezierCubeFaces[0], value); }
+        public MeshGeometry3D BezierCubeFace2 { get => bezierCubeFaces[1]; private set => SetValue(ref bezierCubeFaces[1], value); }
+        public MeshGeometry3D BezierCubeFace3 { get => bezierCubeFaces[2]; private set => SetValue(ref bezierCubeFaces[2], value); }
+        public MeshGeometry3D BezierCubeFace4 { get => bezierCubeFaces[3]; private set => SetValue(ref bezierCubeFaces[3], value); }
+        public MeshGeometry3D BezierCubeFace5 { get => bezierCubeFaces[4]; private set => SetValue(ref bezierCubeFaces[4], value); }
+        public MeshGeometry3D BezierCubeFace6 { get => bezierCubeFaces[5]; private set => SetValue(ref bezierCubeFaces[5], value); }
 
-        private MeshGeometry3D bezierCubeFace1;
-        private MeshGeometry3D bezierCubeFace2;
-        private MeshGeometry3D bezierCubeFace3;
-        private MeshGeometry3D bezierCubeFace4;
-        private MeshGeometry3D bezierCubeFace5;
-        private MeshGeometry3D bezierCubeFace6;
+        private MeshGeometry3D[] bezierCubeFaces = new MeshGeometry3D[6];
+        //private MeshGeometry3D bezierCubeFace1;
+        //private MeshGeometry3D bezierCubeFace2;
+        //private MeshGeometry3D bezierCubeFace3;
+        //private MeshGeometry3D bezierCubeFace4;
+        //private MeshGeometry3D bezierCubeFace5;
+        //private MeshGeometry3D bezierCubeFace6;
         private Geometry3D bezierShapeGeometry;
         private Geometry3D[] objGeometry;
 
-        public PhongMaterial RedMaterial { get; private set; } = PhongMaterials.Red;
         public Geometry3D BezierShapeGeometry { get => bezierShapeGeometry; private set => SetValue(ref bezierShapeGeometry, value); }
-
         public PhongMaterial GoldMaterial { get; private set; } = PhongMaterials.Gold;
         public ObservableElement3DCollection CustomModel3DCollection { get; set; } = new ObservableElement3DCollection();
-
 
         public Config Config { get; set; } = new Config();
 
@@ -93,15 +97,17 @@ namespace JellySimulation
             DirectionalLightColor = Colors.White;
             DirectionalLightDirection = new Vector3D(-2, -5, -2);
 
-            float SIZE = Config.SIZE;
+            float SIZE = Config.BOUNDINGBOX_SIZE;
             Grid = LineBuilder.GenerateGrid(new Vector3(0, 1, 0), -5, 5);
             GridTransform = new Media3D.TranslateTransform3D(0, -1.3 * SIZE, 0);
 
+            // Bounding Box
             MeshBuilder mb = new MeshBuilder();
             mb.AddBoundingBox(new Media3D.Rect3D(-SIZE, -SIZE, -SIZE, 2 * SIZE, 2 * SIZE, 2 * SIZE), 0.2);
             BoundingBox = LineBuilder.GenerateBoundingBox(mb.ToMeshGeometry3D());
             BoundingBoxTransform = Transform3D.Identity;
 
+            // Frame Box
             SIZE = (Config.POINTS - 1) / 2.0f;
             mb = new MeshBuilder();
             mb.AddBoundingBox(new Media3D.Rect3D(-SIZE, -SIZE, -SIZE, 2 * SIZE, 2 * SIZE, 2 * SIZE), 0.2);
@@ -128,7 +134,7 @@ namespace JellySimulation
             //}
         }
 
-        internal void SetState(SimulationPoint[][][] points, Vector3D framePos)
+        internal void SetState(JellyPoint[][][] points, Vector3D framePos)
         {
             int size = Config.POINTS;
             int it = size - 1;
@@ -162,7 +168,6 @@ namespace JellySimulation
                         for (int k = 0; k < 4; k++)
                         {
                             bezierPts[i][j][k] = points[i][j][k].Position;
-
                         }
                     }
                 }
@@ -177,7 +182,7 @@ namespace JellySimulation
                     int[] tmp2 = new int[g.Indices.Count];
                     g.Indices.CopyTo(tmp2);
                     mesh.Indices = new IntCollection(tmp2);
-                    Vector3 offset = new Vector3(1.5f, 1.5f, 1.5f);
+                    //Vector3 offset = new Vector3(1.5f, 1.5f, 1.5f);
                     for (int i = 0; i < mesh.Positions.Count; i++)
                     {
                         //mesh.Positions[i] = 0.75f*(Transform(mesh.Positions[i]/1.5f, bezierPts) + offset);
@@ -192,134 +197,47 @@ namespace JellySimulation
             }
         }
 
-        private void UpdateBezierCube(SimulationPoint[][][] points)
+        private void UpdateBezierCube(JellyPoint[][][] points)
         {
-            var pts = new Vector3[4][];
-            for (int i = 0; i < 4; i++)
+            MeshGeometry3D[] bezierCubeFaces = new MeshGeometry3D[6];
+            for (int faceID = 0; faceID < 6; faceID++)
             {
-                pts[i] = new Vector3[4];
-                for (int j = 0; j < 4; j++)
+                var pts = new Vector3[4][];
+                for (int i = 0; i < 4; i++)
                 {
-                    pts[i][j] = points[j][i][0].Position;
-                }
-            }
-            BezierCubeFace1 = CalculateBezierFace((u, v) =>
-            {
-                var res = Vector3.Zero;
-                for (int i = 0; i < basis.Length; i++)
-                {
-                    for (int j = 0; j < basis.Length; j++)
+                    pts[i] = new Vector3[4];
+                    for (int j = 0; j < 4; j++)
                     {
-                        res += basis[i](u) * basis[j](v) * pts[i][j];
+                        switch(faceID)
+                        {
+                            case 0: pts[i][j] = points[j][i][0].Position; break;
+                            case 1: pts[i][j] = points[i][j][3].Position; break;
+                            case 2: pts[i][j] = points[0][j][i].Position; break;
+                            case 3: pts[i][j] = points[3][i][j].Position; break;
+                            case 4: pts[i][j] = points[i][0][j].Position; break;
+                            case 5: pts[i][j] = points[j][3][i].Position; break;
+                        }
                     }
                 }
-                return res;
-            });
-            pts = new Vector3[4][];
-            for (int i = 0; i < 4; i++)
-            {
-                pts[i] = new Vector3[4];
-                for (int j = 0; j < 4; j++)
+                bezierCubeFaces[faceID] = CalculateBezierFace((u, v) =>
                 {
-                    pts[i][j] = points[i][j][3].Position;
-                }
-            }
-            BezierCubeFace2 = CalculateBezierFace((u, v) =>
-            {
-                var res = Vector3.Zero;
-                for (int i = 0; i < basis.Length; i++)
-                {
-                    for (int j = 0; j < basis.Length; j++)
+                    var res = Vector3.Zero;
+                    for (int i = 0; i < basis.Length; i++)
                     {
-                        res += basis[i](u) * basis[j](v) * pts[i][j];
+                        for (int j = 0; j < basis.Length; j++)
+                        {
+                            res += basis[i](u) * basis[j](v) * pts[i][j];
+                        }
                     }
-                }
-                return res;
-            });
-            pts = new Vector3[4][];
-            for (int i = 0; i < 4; i++)
-            {
-                pts[i] = new Vector3[4];
-                for (int j = 0; j < 4; j++)
-                {
-                    pts[i][j] = points[0][j][i].Position;
-                }
+                    return res;
+                });
             }
-            BezierCubeFace3 = CalculateBezierFace((u, v) =>
-            {
-                var res = Vector3.Zero;
-                for (int i = 0; i < basis.Length; i++)
-                {
-                    for (int j = 0; j < basis.Length; j++)
-                    {
-                        res += basis[i](u) * basis[j](v) * pts[i][j];
-                    }
-                }
-                return res;
-            });
-            pts = new Vector3[4][];
-            for (int i = 0; i < 4; i++)
-            {
-                pts[i] = new Vector3[4];
-                for (int j = 0; j < 4; j++)
-                {
-                    pts[i][j] = points[3][i][j].Position;
-                }
-            }
-            BezierCubeFace4 = CalculateBezierFace((u, v) =>
-            {
-                var res = Vector3.Zero;
-                for (int i = 0; i < basis.Length; i++)
-                {
-                    for (int j = 0; j < basis.Length; j++)
-                    {
-                        res += basis[i](u) * basis[j](v) * pts[i][j];
-                    }
-                }
-                return res;
-            });
-            pts = new Vector3[4][];
-            for (int i = 0; i < 4; i++)
-            {
-                pts[i] = new Vector3[4];
-                for (int j = 0; j < 4; j++)
-                {
-                    pts[i][j] = points[i][0][j].Position;
-                }
-            }
-            BezierCubeFace5 = CalculateBezierFace((u, v) =>
-            {
-                var res = Vector3.Zero;
-                for (int i = 0; i < basis.Length; i++)
-                {
-                    for (int j = 0; j < basis.Length; j++)
-                    {
-                        res += basis[i](u) * basis[j](v) * pts[i][j];
-                    }
-                }
-                return res;
-            });
-            pts = new Vector3[4][];
-            for (int i = 0; i < 4; i++)
-            {
-                pts[i] = new Vector3[4];
-                for (int j = 0; j < 4; j++)
-                {
-                    pts[i][j] = points[j][3][i].Position;
-                }
-            }
-            BezierCubeFace6 = CalculateBezierFace((u, v) =>
-            {
-                var res = Vector3.Zero;
-                for (int i = 0; i < basis.Length; i++)
-                {
-                    for (int j = 0; j < basis.Length; j++)
-                    {
-                        res += basis[i](u) * basis[j](v) * pts[i][j];
-                    }
-                }
-                return res;
-            });
+            BezierCubeFace1 = bezierCubeFaces[0];
+            BezierCubeFace2 = bezierCubeFaces[1];
+            BezierCubeFace3 = bezierCubeFaces[2];
+            BezierCubeFace4 = bezierCubeFaces[3];
+            BezierCubeFace5 = bezierCubeFaces[4];
+            BezierCubeFace6 = bezierCubeFaces[5];
         }
 
         protected virtual MeshGeometry3D CalculateBezierFace(Func<float, float, Vector3> Evaluate)

@@ -23,7 +23,7 @@ namespace JellySimulation
         private float disorder = 1;
         public float Disorder { get => disorder; set => SetValue(ref disorder, value); }
 
-        public const int SIZE = 4;
+        public const int BOUNDINGBOX_SIZE = 4;
         public const int POINTS = 4;
     }
 }

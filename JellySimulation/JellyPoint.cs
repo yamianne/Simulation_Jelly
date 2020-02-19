@@ -7,15 +7,15 @@ using System.Threading.Tasks;
 
 namespace JellySimulation
 {
-    internal class SimulationPoint
+    internal class JellyPoint
     {
-        public SimulationPoint(float x, float y, float z)
+        public JellyPoint(float x, float y, float z)
         {
             Position = new Vector3(x, y, z);
             Velocity = Vector3.Zero;
             Force = Vector3.Zero;
         }
-        private const float MI = 0.4f;
+        private const float MI = 0.0f;
 
         public Vector3 Position;
         public Vector3 Velocity;

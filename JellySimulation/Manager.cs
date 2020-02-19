@@ -17,7 +17,7 @@ namespace JellySimulation
 
         private DispatcherTimer timer;
 
-        SimulationPoint[][][] points;
+        JellyPoint[][][] points;
         Spring[] springs;
         Spring[] springs2;
         const float precision = 0.05f;
@@ -44,16 +44,16 @@ namespace JellySimulation
 
         private void InitializeSimulation()
         {
-            points = new SimulationPoint[Config.POINTS][][];
+            points = new JellyPoint[Config.POINTS][][];
             for (int i = 0; i < Config.POINTS; i++)
             {
-                points[i] = new SimulationPoint[Config.POINTS][];
+                points[i] = new JellyPoint[Config.POINTS][];
                 for (int j = 0; j < Config.POINTS; j++)
                 {
-                    points[i][j] = new SimulationPoint[Config.POINTS];
+                    points[i][j] = new JellyPoint[Config.POINTS];
                     for (int k = 0; k < Config.POINTS; k++)
                     {
-                        points[i][j][k] = new SimulationPoint(i - (Config.POINTS - 1) / 2.0f, j - (Config.POINTS - 1) / 2.0f, k - (Config.POINTS - 1) / 2.0f);
+                        points[i][j][k] = new JellyPoint(i - (Config.POINTS - 1) / 2.0f, j - (Config.POINTS - 1) / 2.0f, k - (Config.POINTS - 1) / 2.0f);
                     }
                 }
             }
@@ -93,14 +93,14 @@ namespace JellySimulation
             springs = spr.ToArray();
             spr.Clear();
             var c2 = SimulationConfig.Elasticity2;
-            spr.Add(new Spring(0, 0, 0, c2, 0));
-            spr.Add(new Spring(3, 0, 0, c2, 0));
-            spr.Add(new Spring(0, 3, 0, c2, 0));
-            spr.Add(new Spring(0, 0, 3, c2, 0));
-            spr.Add(new Spring(0, 3, 3, c2, 0));
-            spr.Add(new Spring(3, 0, 3, c2, 0));
-            spr.Add(new Spring(3, 3, 0, c2, 0));
-            spr.Add(new Spring(3, 3, 3, c2, 0));
+            spr.Add(new Spring( 0,  0,  0, c2, 0));
+            spr.Add(new Spring(IT,  0,  0, c2, 0));
+            spr.Add(new Spring( 0, IT,  0, c2, 0));
+            spr.Add(new Spring( 0,  0, IT, c2, 0));
+            spr.Add(new Spring( 0, IT, IT, c2, 0));
+            spr.Add(new Spring(IT,  0, IT, c2, 0));
+            spr.Add(new Spring(IT, IT,  0, c2, 0));
+            spr.Add(new Spring(IT, IT, IT, c2, 0));
 
             springs2 = spr.ToArray();
         }
@@ -112,25 +112,25 @@ namespace JellySimulation
 
         private void RecalculatePoints()
         {
-            var k1 = SimulationConfig.Damping;
+            var damping = SimulationConfig.Damping;
 
             foreach (var s in springs)
             {
-                var forceDir = points[s.P1I1][s.P1I2][s.P1I3].Position - points[s.P2I1][s.P2I2][s.P2I3].Position;
+                var forceDir = points[s.Point1_X][s.Point1_Y][s.Point1_Z].Position - points[s.Point2_X][s.Point2_Y][s.Point2_Z].Position;
                 var f = s.Force(forceDir.Length());
                 forceDir.Normalize();
 
-                points[s.P1I1][s.P1I2][s.P1I3].Force += forceDir * f;
-                points[s.P2I1][s.P2I2][s.P2I3].Force -= forceDir * f;
+                points[s.Point1_X][s.Point1_Y][s.Point1_Z].Force += forceDir * f;
+                points[s.Point2_X][s.Point2_Y][s.Point2_Z].Force -= forceDir * f;
             }
             var framePos = FramePos.ToVector3();
             foreach (var s in springs2)
             {
-                var forceDir = points[s.P1I1][s.P1I2][s.P1I3].Position - (framePos + new Vector3(Offset(s.P1I1), Offset(s.P1I2), Offset(s.P1I3)));
+                var forceDir = points[s.Point1_X][s.Point1_Y][s.Point1_Z].Position - (framePos + new Vector3(Offset(s.Point1_X), Offset(s.Point1_Y), Offset(s.Point1_Z)));
                 var f = s.Force(forceDir.Length());
                 forceDir.Normalize();
 
-                points[s.P1I1][s.P1I2][s.P1I3].Force += forceDir * f;
+                points[s.Point1_X][s.Point1_Y][s.Point1_Z].Force += forceDir * f;
             }
             for (int i = 0; i < Config.POINTS; i++)
             {
@@ -138,7 +138,7 @@ namespace JellySimulation
                 {
                     for (int k = 0; k < Config.POINTS; k++)
                     {
-                        points[i][j][k].Next(precision, Config.SIZE, k1);
+                        points[i][j][k].Next(precision, Config.BOUNDINGBOX_SIZE, damping);
                     }
                 }
             }

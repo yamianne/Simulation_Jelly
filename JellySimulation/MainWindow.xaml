@@ -46,11 +46,11 @@
                 <hx:AmbientLight3D Color="{Binding AmbientLightColor}" />
                 <hx:DirectionalLight3D Direction="{Binding Camera.LookDirection}" Color="{Binding DirectionalLightColor}"/>
 
-                <hx:LineGeometryModel3D 
+                <!--<hx:LineGeometryModel3D 
                 Name="Grid"
                 Geometry="{Binding Grid}"
                 Transform="{Binding GridTransform}"
-                Color="Black" />
+                Color="Black" />-->
 
                 <hx:LineGeometryModel3D
                     Name="BoundingBox"
@@ -134,7 +134,7 @@
                             <Setter Property="Margin" Value="0 10 0 0"/>
                         </Style>
                     </StackPanel.Resources>
-                    <CheckBox Name="Checkbox_ControlPoints" Content="Control Points and Springs" IsChecked="True"/>
+                    <CheckBox Name="Checkbox_ControlPoints" Content="Control Points" IsChecked="True"/>
                     <CheckBox Name="Checkbox_ControlSprings" Content="Control Springs" IsChecked="True"/>
                     <CheckBox Name="Checkbox_Frame" Content="Control Frame" IsChecked="True"/>
                     <CheckBox Name="Checkbox_BoundingBox" Content="Bounding Box" IsChecked="True"/>

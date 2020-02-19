@@ -48,7 +48,7 @@ namespace JellySimulation
 
         private void ResetButton_Click(object sender, RoutedEventArgs e)
         {
-
+            manager.StartSimultaion();
         }
 
         private void LoadButton_Click (object sender, RoutedEventArgs e)
